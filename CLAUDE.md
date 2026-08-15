@@ -96,3 +96,7 @@ Plugin version lives in three places that must move together: `.claude-plugin/pl
 - Imperative voice for instructions, explanatory voice for rationale.
 - Hedge claims that aren't established as fact; avoid unearned absolutes.
 - If you change the `SKILL.md` frontmatter `description`, keep it under 1024 characters and make sure the change genuinely improves trigger recall (this description is Claude's primary signal for when to reach for the skill).
+
+## LLM Wiki
+
+This repo maintains its own dogfood knowledge base at `_wiki/wiki/` (non-default path — see why in `_wiki/memory.md`). Read `_wiki/memory.md` before answering questions that could draw on accumulated wiki knowledge.
