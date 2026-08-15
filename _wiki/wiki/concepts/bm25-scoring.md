@@ -19,8 +19,13 @@ updated: 2026-08-15
 
 [[reciprocal-rank-fusion-search]]에서 semantic 랭크와 융합되는 두 입력 중 하나이며, semantic 백엔드가 실패했을 때는 유일한 랭킹 신호가 되어 [[hybrid-retrieval-search]] 전체의 안전망 역할을 한다.
 
+## 한글 지원 (fork 로컬 패치로 해결)
+
+업스트림 토크나이저 `TOKEN_RE = re.compile(r"[a-z0-9]+")`는 한글 유니코드 범위를 포함하지 않아, 한글 텍스트가 이 정규식에서 토큰을 하나도 생성하지 못했다. `--no-embed` 경로나 semantic 백엔드 폴백 시 BM25가 유일한 신호가 되는 상황에서는 한글 위키의 lexical 검색이 사실상 무력화되는 문제였다. 이 fork는 `patches/hangul-tokenizer.patch`로 `TOKEN_RE`를 `r"[a-z0-9]+|[가-힣ㄱ-ㆎ]+"`로 확장해 완성형 음절과 자모를 토큰으로 인식하게 만들었다 — [[multilingual-embedding-fork-patch-strategy]] 참고. 스크립트 경계 토크나이저일 뿐 형태소 분석기는 아니라서 조사가 붙은 형태(예: "다국어를"/"다국어가")는 여전히 서로 다른 토큰으로 남는다.
+
 ## 관련 페이지
 
 - [[reciprocal-rank-fusion-search]]
 - [[pure-stdlib-fallback-scripts]]
 - [[hybrid-retrieval-search]]
+- [[multilingual-embedding-fork-patch-strategy]]
