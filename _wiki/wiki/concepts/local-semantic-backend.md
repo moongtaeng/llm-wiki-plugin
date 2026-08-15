@@ -25,3 +25,4 @@ updated: 2026-08-15
 - [[content-hash-incremental-embedding-cache]]
 - [[bm25-scoring]]
 - [[fastembed]], [[sqlite-vec]], [[baai-bge-small-en-v1-5]]
+- [[multilingual-embedding-fork-patch-strategy]]

@@ -75,4 +75,4 @@ When this file exceeds ~300 lines or the wiki passes ~150 pages, shard into `wik
 
 ## Synthesis
 
-(populated as query answers are filed back)
+- [[multilingual-embedding-fork-patch-strategy]] — 한글/다국어 임베딩 지원을 위한 fork 로컬 patch 전략(SCHEMA.md로는 해결 안 됨, LOCAL_EMBED_MODEL 상수 패치). Updated: 2026-08-15
