@@ -31,19 +31,32 @@ scripts/apply-local-patches.sh --check
 
 ### `multilingual-embedding.patch`
 
-`LOCAL_EMBED_MODEL` 상수 하드코딩을 `FASTEMBED_MODEL` 환경변수로 오버라이드 가능하게 만든다.
-한국어 등 비영어 위키에서 다국어 임베딩 모델(예: `intfloat/multilingual-e5-small`,
-`BAAI/bge-m3`)을 쓰기 위함. 차원 수는 `TextEmbedding.get_embedding_size()`가 모델별로
-자동 계산하므로 별도 패치가 필요 없다.
+`LOCAL_EMBED_MODEL` 상수 하드코딩을 `FASTEMBED_MODEL` 환경변수로 오버라이드 가능하게 만들고,
+**환경변수 미설정 시의 폴백 기본값도 upstream의 영문 전용 `BAAI/bge-small-en-v1.5`가 아니라
+`intfloat/multilingual-e5-large`로 바꾼다.** 차원 수는 `TextEmbedding.get_embedding_size()`가
+모델별로 자동 계산하므로 별도 패치가 필요 없다.
 
-적용 후:
+폴백 기본값 자체를 바꾼 이유: 처음에는 "환경변수 오버라이드만 가능하게 하고 기본값은
+upstream 그대로 둔다"는 설계였으나, 다른 (소설 집필용) 레포에서 이 fork의 검색을 쓰다가
+`FASTEMBED_MODEL`을 설정하지 않은 세션에서 `~/.cache/llm-wiki`에 남아있던 이전 캐시
+모델(영문 전용)을 계속 읽어 들이는 문제가 드러났다. 즉 "환경변수로 바꿀 수 있다"는
+것만으로는 설정을 깜빡하면 여전히 한글이 사실상 동작하지 않는 모델로 조용히 폴백된다.
+이 fork의 존재 이유가 한글 지원이므로, 폴백 기본값 자체를 다국어 모델로 바꿔 환경변수를
+전혀 건드리지 않아도 한글 위키가 기본으로 동작하도록 했다. `multilingual-e5-small`이나
+`bge-m3`도 후보로 검토했으나 그 레포에서 최종적으로 검증에 쓴 모델이 `multilingual-e5-large`
+였고, 용량은 더 크지만(수백MB~1GB대) 한국어 검색 품질이 더 안정적이라 기본값으로 채택했다.
+
+영어 전용 위키 등 upstream 기본값(`BAAI/bge-small-en-v1.5`)이 필요하면 `FASTEMBED_MODEL`을
+명시적으로 지정한다:
 ```bash
-export FASTEMBED_MODEL="intfloat/multilingual-e5-small"
+export FASTEMBED_MODEL="BAAI/bge-small-en-v1.5"
 uv run --script skills/llm-wiki/scripts/setup_wiki.py --wiki wiki --cache
 ```
 모델을 바꾸면 벡터 인덱스 스키마 검증(`VECTOR_INDEX_SCHEMA`/차원 비교)이 자동으로
 불일치를 감지해 기존 `embeddings.sqlite` 테이블을 드롭 후 재구축한다 — 수동 마이그레이션
-불필요.
+불필요. 캐시가 꼬였을 때(예: 이전 모델이 계속 읽히는 것으로 보일 때)는
+`~/.cache/llm-wiki`와 wiki별 `wiki/.wiki-cache/`를 지우고 재설치해 이전 모델이 남아있지
+않은지 확인할 것.
 
 ### `hangul-tokenizer.patch`
 

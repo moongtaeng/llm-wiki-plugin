@@ -1,3 +1,7 @@
+---
+links: "[[index]]"
+---
+
 # Wiki Schema
 
 This file is the configuration for this wiki. It documents the conventions, page types, tag taxonomy, and any workflow customizations. The LLM reads this first when entering the wiki, and its conventions override the defaults documented in the `llm-wiki` skill.
