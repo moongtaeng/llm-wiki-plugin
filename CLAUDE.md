@@ -61,6 +61,8 @@ Also plain `unittest` files runnable directly: `python3 eval/retrieval/test_sear
 ```
 After edits: `/plugin marketplace update` then reinstall. No build step — skill, commands, and scripts run as-is from the filesystem.
 
+This fork carries local patches (Korean/multilingual retrieval support) that live outside the installed plugin cache and do not survive `/plugin marketplace update` on their own — see `patches/README.md`. Run `scripts/apply-local-patches.sh` after every marketplace update/reinstall.
+
 ### Paperclip sub-plugin (`integrations/paperclip/plugin/`)
 Has its own `package.json`, `esbuild.config.mjs`, `vitest.config.ts` — treat it as an independent Node/TS project when working there; check its own README/scripts rather than assuming root commands apply.
 
