@@ -1,3 +1,7 @@
+---
+tags: log
+---
+
 # Wiki Log
 
 Append-only chronological record of operations on the wiki. Each entry begins with `## [YYYY-MM-DD] <op> | <description>` so it's parseable with `grep "^## \[" log.md | tail -N`.

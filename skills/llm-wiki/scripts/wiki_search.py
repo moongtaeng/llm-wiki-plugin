@@ -51,9 +51,19 @@ from pathlib import Path
 
 WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|[^\]]+)?\]\]")
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
-TOKEN_RE = re.compile(r"[a-z0-9]+")
+# Fork-local: the upstream pattern (r"[a-z0-9]+") only matches ASCII, so
+# Korean (and other non-Latin) text produces zero BM25 tokens. Extending
+# the class to Hangul syllables (U+AC00-D7A3) and jamo (U+3131-318E) is a
+# script-boundary tokenizer, not a real morphological analyzer — particles
+# stay glued to their stem — but it beats matching nothing. See
+# patches/hangul-tokenizer.patch.
+TOKEN_RE = re.compile(r"[a-z0-9]+|[가-힣ㄱ-ㆎ]+")
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*#*\s*$")
-LOCAL_EMBED_MODEL = "BAAI/bge-small-en-v1.5"
+# Fork-local: model is overridable via FASTEMBED_MODEL, and the fallback
+# default is multilingual (not upstream's English-only bge-small) so a
+# Korean wiki works out of the box even if the env var is never set. See
+# patches/multilingual-embedding.patch.
+LOCAL_EMBED_MODEL = os.environ.get("FASTEMBED_MODEL", "intfloat/multilingual-e5-large")
 VECTOR_INDEX_SCHEMA = "2"
 VECTOR_INDEX_NAME = "embeddings.sqlite"
 MAX_COSINE_DISTANCE = 0.35

@@ -1,3 +1,7 @@
+---
+links: "[[SCHEMA]]"
+---
+
 # LLM Wiki — agent memory
 
 This project maintains an LLM-curated wiki at `_wiki/wiki/` (raw sources in `_wiki/raw/`) following Andrej Karpathy's "LLM Wiki" pattern (https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f). Note the non-default paths: this repo is the `llm-wiki` plugin's own source, so the wiki lives under `_wiki/` instead of the plugin defaults `wiki/`/`raw/` to avoid colliding with the plugin's shipped templates and docs.
