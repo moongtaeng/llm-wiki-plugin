@@ -22,3 +22,8 @@ docs/.vitepress/cache/
 release-assets/
 docs/public/assets/second-brain-*.png
 docs/public/assets/llm-wiki-second-brain-*.png
+
+
+
+# custom
+.omc/
