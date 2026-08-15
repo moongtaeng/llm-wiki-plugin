@@ -53,3 +53,9 @@ Operations:
 - Answer filed back: multilingual-embedding-fork-patch-strategy (synthesis). 결론: SCHEMA.md만으로는 해결 안 됨(모델 선택은 Python 코드 상수) — `wiki_search.py`의 `LOCAL_EMBED_MODEL` 상수를 `FASTEMBED_MODEL` 환경변수로 오버라이드 가능하게 만드는 patch를 fork 저장소에 버전관리(`patches/multilingual-embedding.patch`)하고, `/plugin marketplace update` 후 `scripts/apply-local-patches.sh`로 재적용하는 전략 채택. 실제 설치된 플러그인 캐시(v3.0.0)에 적용·재실행·복구까지 검증 완료.
 - Also corrected: 기존 [[local-semantic-backend]]/[[baai-bge-small-en-v1-5]] 서술("함수 내부 리터럴")이 부정확함을 확인 — 실제로는 모듈 레벨 상수(`wiki_search.py:56`)였음.
 - Open item: BM25 lexical 토크나이저(`TOKEN_RE = r"[a-z0-9]+"`)가 한글을 전혀 토큰화하지 못하는 문제는 이번 패치 범위 밖, 미해결.
+
+## [2026-08-15] ingest | patches/hangul-tokenizer.patch — BM25 한글 토큰화 후속 패치
+- Disposition: Update (이전 query 항목의 open item 해소)
+- `TOKEN_RE`를 `r"[a-z0-9]+"` → `r"[a-z0-9]+|[가-힣ㄱ-ㆎ]+"`로 확장하는 두 번째 fork patch 작성·검증. multilingual-embedding.patch와 같은 파일의 다른 줄을 건드려 순서 무관하게 함께 적용됨을 확인.
+- 실제 설치된 플러그인 캐시(v3.0.0)에 적용, `wiki_search.py --no-embed`로 한글 쿼리("다국어") 실검색 성공 확인.
+- Updated: bm25-scoring (한글 미지원→해결 서술 갱신), multilingual-embedding-fork-patch-strategy (후속 패치 섹션 추가), patches/README.md.
