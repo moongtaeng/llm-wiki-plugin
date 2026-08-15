@@ -16,19 +16,27 @@ updated: 2026-08-15
 - **raw 소스** (`raw/`) — 불변, 사용자 큐레이션. LLM은 읽기만 한다.
 - **위키** (`wiki/{sources,entities,concepts,synthesis}/`) — LLM 소유, 생성된 마크다운. 페이지 타입별 서브디렉터리로 나뉜다.
 - **스키마** (`wiki/SCHEMA.md`) — 사용자와 co-evolve하는 설정 계층. 이 위키에 한해 기본 컨벤션을 오버라이드한다. 기존 위키에 진입할 때 항상 먼저 읽는다.
-- **그래프** (`wiki/graph/`, 선택) — frontmatter의 타입 있는 `graph:` 메타데이터를 `wiki_graph_extract.py`가 `nodes.jsonl`/`edges.jsonl`/`graph.sqlite`/`graph.graphml`로 컴파일한 것. 마크다운이 항상 canonical이며 그래프는 항상 재생성 가능하다.
+- **그래프** (`wiki/graph/`, 선택) — frontmatter의 타입 있는 `graph:` 메타데이터를 `wiki_graph_extract.py`가 `nodes.jsonl`/`edges.jsonl`/`graph.sqlite`/`graph.graphml`로 컴파일한 것. 마크다운이 항상 canonical이며 그래프는 항상 재생성 가능하다. 상세: [[graph-layer]].
 
 ## 연산
 
-- **Ingest** — 새 소스를 위키 페이지로 컴파일한다.
-- **Query** — 질문에 답하고(인용 포함), 필요하면 답을 synthesis로 파일링한다.
-- **Lint** — 구조적·의미적 건강 점검을 한다.
+- **Ingest** — 새 소스를 위키 페이지로 컴파일한다. 상세: [[ingest-workflow]].
+- **Query** — 질문에 답하고(인용 포함), 필요하면 답을 synthesis로 파일링한다. 상세: [[query-workflow]].
+- **Lint** — 구조적·의미적 건강 점검을 한다. 상세: [[lint-workflow]].
 
 ## 확장성 규율과의 관계
 
-이 아키텍처는 그 자체로 목적이 아니라, 위키가 커져도 질의가 너무 많은 페이지를 읽거나 관련 페이지를 놓치지 않도록 하는 확장성 규율의 토대다 — 원자적 페이지 크기 상한, 인덱스 우선 탐색, 모든 페이지의 YAML frontmatter, 수술적 편집(str_replace), 청크 단위 소스 읽기가 모두 이 3계층/3연산 구조 위에서 강제된다.
+이 아키텍처는 그 자체로 목적이 아니라, 위키가 커져도 질의가 너무 많은 페이지를 읽거나 관련 페이지를 놓치지 않도록 하는 [[scalability-discipline]]의 토대다 — 원자적 페이지 크기 상한([[page-sizing-discipline]]), 인덱스 우선 탐색, 모든 페이지의 YAML frontmatter([[page-conventions]]), 수술적 편집(str_replace), 청크 단위 소스 읽기가 모두 이 3계층/3연산 구조 위에서 강제된다. 규모가 커지면 [[scaling-playbook-thresholds]]에 따라 구조를 마이그레이션한다.
+
+## 이 패턴이 잘못될 수 있는 방식
+
+[[wiki-failure-modes]]가 이 아키텍처를 잘못 운용했을 때 나타나는 4가지 실패(침묵의 부패, 자기 출력 드리프트, 유지보수 래칫, 관계형 스코프 크리프)를 규정한다.
 
 ## 관련 페이지
 
 - [[llm-wiki-architecture-reference]] — 이 개념의 근거가 된 아키텍처 레퍼런스 소스.
 - [[dogfooding-llm-wiki]] — 이 아키텍처를 플러그인 자체 개발에 재귀적으로 적용하는 실천.
+- [[ingest-workflow]], [[query-workflow]], [[lint-workflow]] — 세 연산의 상세 페이지.
+- [[graph-layer]] — 선택적 네 번째 계층의 상세 페이지.
+- [[scalability-discipline]] — 이 아키텍처가 뒷받침하는 확장성 규율.
+- [[wiki-failure-modes]] — 이 아키텍처의 4대 실패 모드.
